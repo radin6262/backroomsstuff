@@ -1,20 +1,21 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "panel": "backroomsstuff:block/outlet",
+    "front": "backroomsstuff:block/outlet",
+    "side": "backroomsstuff:block/wall3",
     "particle": "backroomsstuff:block/outlet"
   },
   "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [
-        0,
-        0,
-        14
+        3.5,
+        3.5,
+        15
       ],
       "to": [
-        16,
-        16,
+        12.5,
+        12.5,
         16
       ],
       "faces": {
@@ -22,55 +23,56 @@
           "uv": [
             0,
             0,
-            16,
-            16
+            72,
+            72
           ],
-          "texture": "#panel"
+          "texture": "#front",
+          "tintindex": -1
         },
         "south": {
           "uv": [
-            16,
             0,
             0,
-            16
+            72,
+            72
           ],
-          "texture": "#panel"
+          "texture": "#front"
         },
         "west": {
           "uv": [
             0,
             0,
-            16,
-            16
+            8,
+            8
           ],
-          "texture": "#panel"
+          "texture": "#side"
         },
         "east": {
           "uv": [
             0,
             0,
-            16,
-            16
+            8,
+            8
           ],
-          "texture": "#panel"
+          "texture": "#side"
         },
         "up": {
           "uv": [
             0,
             0,
-            16,
-            2
+            9,
+            1
           ],
-          "texture": "#panel"
+          "texture": "#side"
         },
         "down": {
           "uv": [
             0,
             0,
-            16,
-            2
+            9,
+            1
           ],
-          "texture": "#panel"
+          "texture": "#side"
         }
       }
     }

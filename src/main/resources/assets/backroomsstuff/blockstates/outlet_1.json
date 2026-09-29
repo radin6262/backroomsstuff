@@ -1,7 +1,20 @@
 {
   "variants": {
-    "": {
-      "model": "backroomsstuff:block/outlet_1"
+    "facing=north": {
+      "model": "backroomsstuff:block/outlet_1",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "backroomsstuff:block/outlet_1",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "backroomsstuff:block/outlet_1",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "backroomsstuff:block/outlet_1",
+      "y": 270
     }
   }
 }

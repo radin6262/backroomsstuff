@@ -1,7 +1,20 @@
 {
   "variants": {
-    "": {
-      "model": "backroomsstuff:block/outlet_1_damaged"
+    "facing=north": {
+      "model": "backroomsstuff:block/outlet_1_damaged",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "backroomsstuff:block/outlet_1_damaged",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "backroomsstuff:block/outlet_1_damaged",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "backroomsstuff:block/outlet_1_damaged",
+      "y": 270
     }
   }
 }
