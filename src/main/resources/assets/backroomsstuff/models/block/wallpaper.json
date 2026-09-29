@@ -1,0 +1,146 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "wall": "backroomsstuff:block/wall",
+    "particle": "backroomsstuff:block/wall"
+  },
+  "render_type": "minecraft:solid",
+  "elements": [
+    {
+      "from": [
+        0,
+        1,
+        15
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            15
+          ],
+          "texture": "#wall"
+        },
+        "south": {
+          "uv": [
+            16,
+            0,
+            0,
+            15
+          ],
+          "texture": "#wall"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            15
+          ],
+          "texture": "#wall"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            15
+          ],
+          "texture": "#wall"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            1
+          ],
+          "texture": "#wall"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            1
+          ],
+          "texture": "#wall"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        14
+      ],
+      "to": [
+        16,
+        1,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#wall"
+        },
+        "south": {
+          "uv": [
+            16,
+            15,
+            0,
+            16
+          ],
+          "texture": "#wall"
+        },
+        "west": {
+          "uv": [
+            0,
+            15,
+            2,
+            16
+          ],
+          "texture": "#wall"
+        },
+        "east": {
+          "uv": [
+            0,
+            15,
+            2,
+            16
+          ],
+          "texture": "#wall"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#wall"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            2
+          ],
+          "texture": "#wall"
+        }
+      }
+    }
+  ]
+}
