@@ -36,8 +36,6 @@ public final class BackroomsStuff {
 
     // Floors use the three distinct supplied source textures.
     public static final DeferredBlock<Block> FLOOR_1 = BLOCKS.registerSimpleBlock("floor_1", solidBlock());
-    public static final DeferredBlock<Block> FLOOR_2 = BLOCKS.registerSimpleBlock("floor_2", solidBlock());
-    public static final DeferredBlock<Block> FLOOR_3 = BLOCKS.registerSimpleBlock("floor_3", solidBlock());
     public static final DeferredBlock<Block> WALL = BLOCKS.registerSimpleBlock("wall", solidBlock());
     public static final DeferredBlock<Block> RIM = BLOCKS.registerSimpleBlock("rim", solidBlock());
 
@@ -49,12 +47,11 @@ public final class BackroomsStuff {
     public static final DeferredBlock<Block> WALL_DIAGONAL = BLOCKS.registerSimpleBlock("wall_diagonal", panelBlock());
     public static final DeferredBlock<Block> DAMAGED_WALL = BLOCKS.registerSimpleBlock("damaged_wall", panelBlock());
 
-    // Thin wallpaper panel with a one-block-wide bottom foot/notch that reaches y=0.
+    // Two wallpaper variants: normal and one with a bottom notch/foot reaching the floor.
     public static final DeferredBlock<Block> WALLPAPER = BLOCKS.registerSimpleBlock("wallpaper", panelBlock());
+    public static final DeferredBlock<Block> WALLPAPER_NOTCHED = BLOCKS.registerSimpleBlock("wallpaper_notched", panelBlock());
 
     public static final DeferredItem<BlockItem> FLOOR_1_ITEM = ITEMS.registerSimpleBlockItem("floor_1", FLOOR_1);
-    public static final DeferredItem<BlockItem> FLOOR_2_ITEM = ITEMS.registerSimpleBlockItem("floor_2", FLOOR_2);
-    public static final DeferredItem<BlockItem> FLOOR_3_ITEM = ITEMS.registerSimpleBlockItem("floor_3", FLOOR_3);
     public static final DeferredItem<BlockItem> WALL_ITEM = ITEMS.registerSimpleBlockItem("wall", WALL);
     public static final DeferredItem<BlockItem> RIM_ITEM = ITEMS.registerSimpleBlockItem("rim", RIM);
     public static final DeferredItem<BlockItem> ROOF_1_ITEM = ITEMS.registerSimpleBlockItem("roof_1", ROOF_1);
@@ -65,6 +62,7 @@ public final class BackroomsStuff {
     public static final DeferredItem<BlockItem> WALL_DIAGONAL_ITEM = ITEMS.registerSimpleBlockItem("wall_diagonal", WALL_DIAGONAL);
     public static final DeferredItem<BlockItem> DAMAGED_WALL_ITEM = ITEMS.registerSimpleBlockItem("damaged_wall", DAMAGED_WALL);
     public static final DeferredItem<BlockItem> WALLPAPER_ITEM = ITEMS.registerSimpleBlockItem("wallpaper", WALLPAPER);
+    public static final DeferredItem<BlockItem> WALLPAPER_NOTCHED_ITEM = ITEMS.registerSimpleBlockItem("wallpaper_notched", WALLPAPER_NOTCHED);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BACKROOMS_TAB =
             CREATIVE_MODE_TABS.register("backrooms", () -> CreativeModeTab.builder()
@@ -72,10 +70,9 @@ public final class BackroomsStuff {
                     .icon(() -> FLOOR_1_ITEM.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(FLOOR_1_ITEM.get());
-                        output.accept(FLOOR_2_ITEM.get());
-                        output.accept(FLOOR_3_ITEM.get());
                         output.accept(WALL_ITEM.get());
                         output.accept(WALLPAPER_ITEM.get());
+                        output.accept(WALLPAPER_NOTCHED_ITEM.get());
                         output.accept(RIM_ITEM.get());
                         output.accept(ROOF_1_ITEM.get());
                         output.accept(OUTLET_1_ITEM.get());
