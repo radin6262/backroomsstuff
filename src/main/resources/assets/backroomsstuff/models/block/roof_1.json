@@ -1,80 +1,24 @@
 {
-  "ambientocclusion": true,
-  "textures": {
-    "top": "backroomsstuff:block/roof1",
-    "bottom": "backroomsstuff:block/floor1",
-    "side": "backroomsstuff:block/rim",
-    "particle": "backroomsstuff:block/roof1"
-  },
-  "render_type": "minecraft:cutout",
-  "elements": [
-    {
-      "from": [
-        0,
-        14,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ],
-      "faces": {
-        "down": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#bottom"
-        },
-        "up": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#top"
-        },
-        "north": {
-          "uv": [
-            0,
-            0,
-            16,
-            2
-          ],
-          "texture": "#side"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            2
-          ],
-          "texture": "#side"
-        },
-        "west": {
-          "uv": [
-            0,
-            0,
-            2,
-            16
-          ],
-          "texture": "#side"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            2,
-            16
-          ],
-          "texture": "#side"
-        }
-      }
-    }
-  ]
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"bottom": "backroomsstuff:block/floor1",
+		"particle": "backroomsstuff:block/roof1"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -5, 0]},
+			"faces": {
+				"north": {"uv": [6.03125, 0, 7.6875, 1.90625], "texture": "#bottom"},
+				"east": {"uv": [0, 0, 2, 16], "texture": "#bottom"},
+				"south": {"uv": [0, 0, 16, 2], "texture": "#bottom"},
+				"west": {"uv": [0, 0, 2, 16], "texture": "#bottom"},
+				"up": {"uv": [0, 0, 3.75, 3.5], "texture": "#bottom"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#bottom"}
+			}
+		}
+	]
 }

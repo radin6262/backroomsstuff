@@ -1,15 +1,9 @@
 {
   "itemGroup.backroomsstuff": "Backrooms Stuff",
-  "block.backroomsstuff.floor_1": "Backrooms Floor 1",
+  "block.backroomsstuff.floor_1": "Backrooms Floor",
   "block.backroomsstuff.wall": "Backrooms Wall",
   "block.backroomsstuff.rim": "Backrooms Trim",
-  "block.backroomsstuff.roof_1": "Backrooms Ceiling 1",
+  "block.backroomsstuff.roof_1": "Backrooms Ceiling",
   "block.backroomsstuff.outlet_1": "Electrical Outlet",
-  "block.backroomsstuff.outlet_1_damaged": "Damaged Electrical Outlet",
-  "block.backroomsstuff.curve": "Curve Panel",
-  "block.backroomsstuff.wall_detail": "Wall Detail Panel",
-  "block.backroomsstuff.wall_diagonal": "Diagonal Wall Panel",
-  "block.backroomsstuff.damaged_wall": "Damaged Wall Panel",
-  "block.backroomsstuff.wallpaper": "Wallpaper",
-  "block.backroomsstuff.wallpaper_notched": "Wallpaper (Notched)"
+  "block.backroomsstuff.notched_backroom_walls": "Notched Backroom Walls"
 }

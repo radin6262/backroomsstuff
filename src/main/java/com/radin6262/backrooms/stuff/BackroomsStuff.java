@@ -15,6 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -29,40 +33,53 @@ public final class BackroomsStuff {
     public static final String MODID = "backroomsstuff";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    public static final DeferredRegister.Blocks BLOCKS =
+            DeferredRegister.createBlocks(MODID);
+
+    public static final DeferredRegister.Items ITEMS =
+            DeferredRegister.createItems(MODID);
+
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Floors use the three distinct supplied source textures.
-    public static final DeferredBlock<Block> FLOOR_1 = BLOCKS.registerSimpleBlock("floor_1", solidBlock());
-    public static final DeferredBlock<Block> WALL = BLOCKS.registerSimpleBlock("wall", solidBlock());
-    public static final DeferredBlock<Block> RIM = BLOCKS.registerSimpleBlock("rim", solidBlock());
+    public static final DeferredBlock<Block> FLOOR_1 =
+            BLOCKS.registerSimpleBlock("floor_1", solidBlock());
 
-    public static final DeferredBlock<Block> ROOF_1 = BLOCKS.registerSimpleBlock("roof_1", panelBlock());
-    public static final DeferredBlock<Block> OUTLET_1 = BLOCKS.register("outlet_1", () -> new WallMountedBlock(panelBlock()));
-    public static final DeferredBlock<Block> OUTLET_1_DAMAGED = BLOCKS.register("outlet_1_damaged", () -> new WallMountedBlock(panelBlock()));
-    public static final DeferredBlock<Block> CURVE = BLOCKS.registerSimpleBlock("curve", panelBlock());
-    public static final DeferredBlock<Block> WALL_DETAIL = BLOCKS.registerSimpleBlock("wall_detail", panelBlock());
-    public static final DeferredBlock<Block> WALL_DIAGONAL = BLOCKS.registerSimpleBlock("wall_diagonal", panelBlock());
-    public static final DeferredBlock<Block> DAMAGED_WALL = BLOCKS.registerSimpleBlock("damaged_wall", panelBlock());
+    public static final DeferredBlock<Block> WALL =
+            BLOCKS.registerSimpleBlock("wall", solidBlock());
 
-    // Two wallpaper variants: normal and one with a bottom notch/foot reaching the floor.
-    public static final DeferredBlock<Block> WALLPAPER = BLOCKS.registerSimpleBlock("wallpaper", panelBlock());
-    public static final DeferredBlock<Block> WALLPAPER_NOTCHED = BLOCKS.registerSimpleBlock("wallpaper_notched", panelBlock());
+    public static final DeferredBlock<Block> RIM =
+            BLOCKS.registerSimpleBlock("rim", solidBlock());
 
-    public static final DeferredItem<BlockItem> FLOOR_1_ITEM = ITEMS.registerSimpleBlockItem("floor_1", FLOOR_1);
-    public static final DeferredItem<BlockItem> WALL_ITEM = ITEMS.registerSimpleBlockItem("wall", WALL);
-    public static final DeferredItem<BlockItem> RIM_ITEM = ITEMS.registerSimpleBlockItem("rim", RIM);
-    public static final DeferredItem<BlockItem> ROOF_1_ITEM = ITEMS.registerSimpleBlockItem("roof_1", ROOF_1);
-    public static final DeferredItem<BlockItem> OUTLET_1_ITEM = ITEMS.registerSimpleBlockItem("outlet_1", OUTLET_1);
-    public static final DeferredItem<BlockItem> OUTLET_1_DAMAGED_ITEM = ITEMS.registerSimpleBlockItem("outlet_1_damaged", OUTLET_1_DAMAGED);
-    public static final DeferredItem<BlockItem> CURVE_ITEM = ITEMS.registerSimpleBlockItem("curve", CURVE);
-    public static final DeferredItem<BlockItem> WALL_DETAIL_ITEM = ITEMS.registerSimpleBlockItem("wall_detail", WALL_DETAIL);
-    public static final DeferredItem<BlockItem> WALL_DIAGONAL_ITEM = ITEMS.registerSimpleBlockItem("wall_diagonal", WALL_DIAGONAL);
-    public static final DeferredItem<BlockItem> DAMAGED_WALL_ITEM = ITEMS.registerSimpleBlockItem("damaged_wall", DAMAGED_WALL);
-    public static final DeferredItem<BlockItem> WALLPAPER_ITEM = ITEMS.registerSimpleBlockItem("wallpaper", WALLPAPER);
-    public static final DeferredItem<BlockItem> WALLPAPER_NOTCHED_ITEM = ITEMS.registerSimpleBlockItem("wallpaper_notched", WALLPAPER_NOTCHED);
+    public static final DeferredBlock<Block> ROOF_1 =
+            BLOCKS.registerSimpleBlock("roof_1", panelBlock());
+
+    public static final DeferredBlock<Block> OUTLET_1 =
+            BLOCKS.register("outlet_1", () -> new WallMountedBlock(panelBlock()));
+
+    public static final DeferredBlock<Block> NOTCHED_BACKROOM_WALLS =
+            BLOCKS.registerSimpleBlock("notched_backroom_walls", panelBlock());
+
+    public static final DeferredItem<BlockItem> FLOOR_1_ITEM =
+            ITEMS.registerSimpleBlockItem("floor_1", FLOOR_1);
+
+    public static final DeferredItem<BlockItem> WALL_ITEM =
+            ITEMS.registerSimpleBlockItem("wall", WALL);
+
+    public static final DeferredItem<BlockItem> RIM_ITEM =
+            ITEMS.registerSimpleBlockItem("rim", RIM);
+
+    public static final DeferredItem<BlockItem> ROOF_1_ITEM =
+            ITEMS.registerSimpleBlockItem("roof_1", ROOF_1);
+
+    public static final DeferredItem<BlockItem> OUTLET_1_ITEM =
+            ITEMS.registerSimpleBlockItem("outlet_1", OUTLET_1);
+
+    public static final DeferredItem<BlockItem> NOTCHED_BACKROOM_WALLS_ITEM =
+            ITEMS.registerSimpleBlockItem(
+                    "notched_backroom_walls",
+                    NOTCHED_BACKROOM_WALLS
+            );
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BACKROOMS_TAB =
             CREATIVE_MODE_TABS.register("backrooms", () -> CreativeModeTab.builder()
@@ -71,16 +88,10 @@ public final class BackroomsStuff {
                     .displayItems((parameters, output) -> {
                         output.accept(FLOOR_1_ITEM.get());
                         output.accept(WALL_ITEM.get());
-                        output.accept(WALLPAPER_ITEM.get());
-                        output.accept(WALLPAPER_NOTCHED_ITEM.get());
                         output.accept(RIM_ITEM.get());
                         output.accept(ROOF_1_ITEM.get());
                         output.accept(OUTLET_1_ITEM.get());
-                        output.accept(OUTLET_1_DAMAGED_ITEM.get());
-                        output.accept(CURVE_ITEM.get());
-                        output.accept(WALL_DETAIL_ITEM.get());
-                        output.accept(WALL_DIAGONAL_ITEM.get());
-                        output.accept(DAMAGED_WALL_ITEM.get());
+                        output.accept(NOTCHED_BACKROOM_WALLS_ITEM.get());
                     })
                     .build());
 
@@ -103,15 +114,64 @@ public final class BackroomsStuff {
                 .noOcclusion();
     }
 
-    /** A thin horizontal-facing decorative block that faces the player on placement. */
+    /**
+     * Thin horizontal-facing decorative block used by the outlet.
+     * The collision shape matches the Blockbench outlet model.
+     */
     private static final class WallMountedBlock extends Block {
+
+        private static final VoxelShape NORTH_SHAPE = Shapes.box(
+                5.0 / 16.0,
+                3.0 / 16.0,
+                15.0 / 16.0,
+                10.0 / 16.0,
+                11.0 / 16.0,
+                16.0 / 16.0
+        );
+
+        private static final VoxelShape EAST_SHAPE = Shapes.box(
+                0.0 / 16.0,
+                3.0 / 16.0,
+                5.0 / 16.0,
+                1.0 / 16.0,
+                11.0 / 16.0,
+                10.0 / 16.0
+        );
+
+        private static final VoxelShape SOUTH_SHAPE = Shapes.box(
+                6.0 / 16.0,
+                3.0 / 16.0,
+                0.0 / 16.0,
+                11.0 / 16.0,
+                11.0 / 16.0,
+                1.0 / 16.0
+        );
+
+        private static final VoxelShape WEST_SHAPE = Shapes.box(
+                15.0 / 16.0,
+                3.0 / 16.0,
+                6.0 / 16.0,
+                16.0 / 16.0,
+                11.0 / 16.0,
+                11.0 / 16.0
+        );
+
         private WallMountedBlock(Properties properties) {
             super(properties);
-            registerDefaultState(stateDefinition.any().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+
+            registerDefaultState(
+                    stateDefinition.any()
+                            .setValue(
+                                    BlockStateProperties.HORIZONTAL_FACING,
+                                    Direction.NORTH
+                            )
+            );
         }
 
         @Override
-        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        protected void createBlockStateDefinition(
+                StateDefinition.Builder<Block, BlockState> builder
+        ) {
             builder.add(BlockStateProperties.HORIZONTAL_FACING);
         }
 
@@ -121,6 +181,22 @@ public final class BackroomsStuff {
                     BlockStateProperties.HORIZONTAL_FACING,
                     context.getHorizontalDirection().getOpposite()
             );
+        }
+
+        @Override
+        protected VoxelShape getShape(
+                BlockState state,
+                BlockGetter level,
+                net.minecraft.core.BlockPos pos,
+                CollisionContext context
+        ) {
+            return switch (state.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+                case NORTH -> NORTH_SHAPE;
+                case EAST -> EAST_SHAPE;
+                case SOUTH -> SOUTH_SHAPE;
+                case WEST -> WEST_SHAPE;
+                default -> NORTH_SHAPE;
+            };
         }
     }
 }
