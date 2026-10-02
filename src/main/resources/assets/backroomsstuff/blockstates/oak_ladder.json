@@ -1,0 +1,47 @@
+{
+  "variants": {
+    "facing=north,waterlogged=false": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=north,waterlogged=true": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 180,
+      "uvlock": true
+    },
+
+    "facing=east,waterlogged=false": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east,waterlogged=true": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 270,
+      "uvlock": true
+    },
+
+    "facing=south,waterlogged=false": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 0,
+      "uvlock": true
+    },
+    "facing=south,waterlogged=true": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 0,
+      "uvlock": true
+    },
+
+    "facing=west,waterlogged=false": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=west,waterlogged=true": {
+      "model": "backroomsstuff:block/oak_ladder",
+      "y": 90,
+      "uvlock": true
+    }
+  }
+}

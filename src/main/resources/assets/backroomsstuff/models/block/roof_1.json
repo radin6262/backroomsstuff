@@ -1,24 +1,8 @@
 {
-	"format_version": "1.21.11",
-	"credit": "Made with Blockbench",
-	"render_type": "minecraft:cutout",
-	"textures": {
-		"bottom": "backroomsstuff:block/floor1",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "backroomsstuff:block/floor1",
 		"particle": "backroomsstuff:block/roof1"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, -5, 0]},
-			"faces": {
-				"north": {"uv": [6.03125, 0, 7.6875, 1.90625], "texture": "#bottom"},
-				"east": {"uv": [0, 0, 2, 16], "texture": "#bottom"},
-				"south": {"uv": [0, 0, 16, 2], "texture": "#bottom"},
-				"west": {"uv": [0, 0, 2, 16], "texture": "#bottom"},
-				"up": {"uv": [0, 0, 3.75, 3.5], "texture": "#bottom"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#bottom"}
-			}
-		}
-	]
+  },
+  "render_type": "minecraft:solid"
 }

@@ -4,21 +4,36 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import software.bernie.geckolib.GeckoLib;
+
+
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+
+import com.radin6262.backrooms.stuff.entity.ModEntityAttributes;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -26,7 +41,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
+import com.radin6262.backrooms.stuff.entity.ModEntities;
 
 @Mod(BackroomsStuff.MODID)
 public final class BackroomsStuff {
@@ -55,10 +71,40 @@ public final class BackroomsStuff {
             BLOCKS.registerSimpleBlock("roof_1", panelBlock());
 
     public static final DeferredBlock<Block> OUTLET_1 =
-            BLOCKS.register("outlet_1", () -> new WallMountedBlock(panelBlock()));
+            BLOCKS.register("outlet_1", () -> new WallMountedBlock(solidBlock()));
+
+    public static class OAK_LADDER extends LadderBlock {
+        public OAK_LADDER(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public boolean isLadder(BlockState state, LevelReader level, BlockPos pos, LivingEntity entity) {
+            // Explicitly tell NeoForge this functions as a climbable surface
+            return true;
+        }
+    }
+
+    public static final DeferredBlock<Block> OAK_LADDER = BLOCKS.registerBlock("oak_ladder",
+            OAK_LADDER::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(0.4F)
+                    .sound(SoundType.LADDER)
+                    .noOcclusion()
+        );
+
 
     public static final DeferredBlock<Block> NOTCHED_BACKROOM_WALLS =
-            BLOCKS.registerSimpleBlock("notched_backroom_walls", panelBlock());
+            BLOCKS.register("notched_backroom_walls",
+                    () -> new Block(BlockBehaviour.Properties.of()
+                            // 1. Copies your base solid block traits (destroy time, blast resistance, etc.)
+                            .destroyTime(2.0f)
+                            .explosionResistance(6.0f)
+                            // 2. CRITICAL: Prevents the block from choking out its own upper vertex lighting
+                            .noOcclusion()
+                    )
+            );
 
     public static final DeferredItem<BlockItem> FLOOR_1_ITEM =
             ITEMS.registerSimpleBlockItem("floor_1", FLOOR_1);
@@ -74,6 +120,9 @@ public final class BackroomsStuff {
 
     public static final DeferredItem<BlockItem> OUTLET_1_ITEM =
             ITEMS.registerSimpleBlockItem("outlet_1", OUTLET_1);
+
+    public static final DeferredItem<BlockItem> OAK_LADDER_ITEM =
+            ITEMS.registerSimpleBlockItem("oak_ladder", OAK_LADDER);
 
     public static final DeferredItem<BlockItem> NOTCHED_BACKROOM_WALLS_ITEM =
             ITEMS.registerSimpleBlockItem(
@@ -91,6 +140,7 @@ public final class BackroomsStuff {
                         output.accept(RIM_ITEM.get());
                         output.accept(ROOF_1_ITEM.get());
                         output.accept(OUTLET_1_ITEM.get());
+                        output.accept(OAK_LADDER_ITEM.get());
                         output.accept(NOTCHED_BACKROOM_WALLS_ITEM.get());
                     })
                     .build());
@@ -98,7 +148,10 @@ public final class BackroomsStuff {
     public BackroomsStuff(IEventBus modEventBus, ModContainer modContainer) {
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
+        ModEntities.register(modEventBus);
+//        modEventBus.addListener(ModEntityAttributes::register);
         CREATIVE_MODE_TABS.register(modEventBus);
+
     }
 
     private static BlockBehaviour.Properties solidBlock() {
@@ -162,7 +215,7 @@ public final class BackroomsStuff {
             registerDefaultState(
                     stateDefinition.any()
                             .setValue(
-                                    BlockStateProperties.HORIZONTAL_FACING,
+                                    net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING,
                                     Direction.NORTH
                             )
             );
@@ -172,13 +225,15 @@ public final class BackroomsStuff {
         protected void createBlockStateDefinition(
                 StateDefinition.Builder<Block, BlockState> builder
         ) {
-            builder.add(BlockStateProperties.HORIZONTAL_FACING);
+            builder.add(
+                    net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING
+            );
         }
 
         @Override
         public BlockState getStateForPlacement(BlockPlaceContext context) {
             return defaultBlockState().setValue(
-                    BlockStateProperties.HORIZONTAL_FACING,
+                    net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING,
                     context.getHorizontalDirection().getOpposite()
             );
         }
@@ -190,7 +245,11 @@ public final class BackroomsStuff {
                 net.minecraft.core.BlockPos pos,
                 CollisionContext context
         ) {
-            return switch (state.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+            return switch (
+                    state.getValue(
+                            net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING
+                    )
+            ) {
                 case NORTH -> NORTH_SHAPE;
                 case EAST -> EAST_SHAPE;
                 case SOUTH -> SOUTH_SHAPE;

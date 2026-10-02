@@ -2,7 +2,7 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "backroomsstuff:block/floor1",
-    "up": "backroomsstuff:block/floor1",
+    "up": "backroomsstuff:block/carpet",
     "north": "backroomsstuff:block/floor1",
     "east": "backroomsstuff:block/floor1",
     "south": "backroomsstuff:block/floor1",
