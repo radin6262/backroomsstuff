@@ -3,6 +3,7 @@ package com.radin6262.backrooms.stuff.entity;
 import java.util.EnumSet;
 
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -24,7 +25,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class Bacteria extends PathfinderMob implements GeoEntity {
 
-    private static final double CHASE_RANGE_SQR = 256.0D; // 16 blocks
+    private static final double CHASE_RANGE_SQR = 144.0D; // 12 blocks
     private static final double MOVEMENT_SPEED = 0.34D;
     private static final double ATTACK_DAMAGE = 10.0D;
 
@@ -42,22 +43,8 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
     protected void registerGoals() {
         super.registerGoals();
 
-        // Combat / chasing
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.65D, true) {
-            @Override
-            public boolean canContinueToUse() {
-                if (!super.canContinueToUse()) {
-                    return false;
-                }
-
-                if (Bacteria.this.distanceToSqr(Bacteria.this.getTarget()) > CHASE_RANGE_SQR) {
-                    Bacteria.this.setTarget(null);
-                    return false;
-                }
-
-                return true;
-            }
-        });
+        // Continuous chase & melee attack without vanilla recalculation delays
+        this.goalSelector.addGoal(2, new BacteriaAttackGoal(this, 1.65D, true));
 
         // Continuous wandering when there is no target
         this.goalSelector.addGoal(
@@ -65,10 +52,20 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
                 new ContinuousStrollGoal(this, 1.35D)
         );
 
-        // Randomly look around while idle/wandering
+        // Randomly look around ONLY when idle (no target)
         this.goalSelector.addGoal(
                 9,
-                new RandomLookAroundGoal(this)
+                new RandomLookAroundGoal(this) {
+                    @Override
+                    public boolean canUse() {
+                        return Bacteria.this.getTarget() == null && super.canUse();
+                    }
+
+                    @Override
+                    public boolean canContinueToUse() {
+                        return Bacteria.this.getTarget() == null && super.canContinueToUse();
+                    }
+                }
         );
 
         // Target the nearest player
@@ -78,10 +75,76 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
         );
     }
 
+    /**
+     * Custom Attack Goal that overrides vanilla's heavy pathfinding delay penalty.
+     */
+    private static class BacteriaAttackGoal extends MeleeAttackGoal {
+
+        private final Bacteria bacteria;
+
+        public BacteriaAttackGoal(
+                Bacteria bacteria,
+                double speedModifier,
+                boolean followingTargetEvenIfNotSeen
+        ) {
+            super(bacteria, speedModifier, followingTargetEvenIfNotSeen);
+            this.bacteria = bacteria;
+        }
+
+        @Override
+        public boolean canUse() {
+            LivingEntity target = this.bacteria.getTarget();
+
+            if (target == null || !target.isAlive()) {
+                return false;
+            }
+
+            return super.canUse();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            LivingEntity target = this.bacteria.getTarget();
+
+            if (target == null || !target.isAlive()) {
+                return false;
+            }
+
+            if (this.bacteria.distanceToSqr(target) > CHASE_RANGE_SQR) {
+                this.bacteria.setTarget(null);
+                return false;
+            }
+
+            return super.canContinueToUse();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+        }
+
+        @Override
+        public void tick() {
+            LivingEntity target = this.bacteria.getTarget();
+
+            if (target == null) {
+                return;
+            }
+
+            this.bacteria.getLookControl().setLookAt(
+                    target,
+                    30.0F,
+                    30.0F
+            );
+
+            super.tick();
+        }
+    }
+
     private static class ContinuousStrollGoal extends Goal {
 
         private static final double MIN_DISTANCE_SQR = 36.0D; // 6 blocks
-        private static final double MAX_DISTANCE_SQR = 256.0D; // 16 blocks
+        private static final double MAX_DISTANCE_SQR = 144.00; // 12 blocks
 
         private static final double REACHED_DISTANCE_SQR = 9.0D; // 3 blocks
 
@@ -128,8 +191,6 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
                 double distanceSqr =
                         this.mob.position().distanceToSqr(candidate);
 
-                // Destination must be at least 6 blocks away
-                // and no more than 16 blocks away.
                 if (distanceSqr < MIN_DISTANCE_SQR ||
                         distanceSqr > MAX_DISTANCE_SQR) {
                     continue;
@@ -189,7 +250,6 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
             double distanceSqr =
                     this.mob.position().distanceToSqr(this.destination);
 
-            // We reached the destination, so immediately choose another.
             if (distanceSqr <= REACHED_DISTANCE_SQR ||
                     this.mob.getNavigation().isDone()) {
 
@@ -200,7 +260,6 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
                 return;
             }
 
-            // If navigation is stuck, give it a few ticks before rerouting.
             if (this.mob.getNavigation().isStuck()) {
                 this.stuckTicks++;
 
@@ -229,7 +288,7 @@ public class Bacteria extends PathfinderMob implements GeoEntity {
                 .add(Attributes.MAX_HEALTH, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED)
                 .add(Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE)
-                .add(Attributes.FOLLOW_RANGE, 16.0D);
+                .add(Attributes.FOLLOW_RANGE, 16.0D); // Increased from 16 to prevent target drop flickering
     }
 
     @Override
